@@ -9,7 +9,7 @@ class Business extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone', 'address'];
+    protected $fillable = ['name', 'email', 'phone', 'address', 'description', 'logo', 'user_id'];
 
     public function categories()
     {
@@ -19,5 +19,10 @@ class Business extends Model
     public function settings()
     {
         return $this->hasOne(Setting::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

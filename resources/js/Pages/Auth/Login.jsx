@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
+import axios from "axios";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -20,10 +21,16 @@ export default function Login({ status, canResetPassword }) {
         };
     }, []);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
-
-        post(route('login'));
+        try {
+            const response = await axios.post('/api/login', data); // Ruta correcta
+            localStorage.setItem('token', response.data.token); // Almacena el token
+            window.location.href = '/dashboard'; // Redirige al dashboard
+        } catch (error) {
+            console.error('Error during login:', error.response?.data || error.message);
+            alert(error.response?.data.message || 'Login failed.');
+        }
     };
 
     return (

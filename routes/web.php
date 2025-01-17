@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BusinessController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +17,8 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -29,7 +33,16 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/businesses', function () {
+    return Inertia::render('Businesses/Index');
+})->middleware(['auth', 'verified'])->name('businesses.index');
+
 Route::middleware('auth')->group(function () {
+
+    Route::get('/api/businesses', [BusinessController::class, 'index']);
+    Route::post('/api/businesses', [BusinessController::class, 'store']);
+    Route::delete('/api/businesses/{id}', [BusinessController::class, 'destroy']);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
